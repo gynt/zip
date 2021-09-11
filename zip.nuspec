@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>zip</id>
+    <version>0.2.0</version>
+    <title>zip</title>
+    <authors>Kuba Podgorski, gynt</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">Unlicense</license>
+    <projectUrl>https://github.com/kuba--/zip/</projectUrl>
+    <repository type="git" url="https://github.com/gynt/zip.git"/>
+    <!--<iconUrl>http://icon_url_here_or_delete_this_line/</iconUrl>-->
+    <description>A portable, simple zip library written in C.</description>
+    <!--<releaseNotes>Summary of changes made in this release of the package.</releaseNotes>-->
+    <copyright>Copyright 2021</copyright>
+    <tags>native zip</tags>
+  </metadata>
+  <files>
+    <file src="Debug\zip.dll" target="build\native\bin\Win32\v142\Debug"/>
+    <file src="Debug\zip.lib" target="build\native\lib\Win32\v142\Debug"/>
+    <file src="Debug\zip.pdb" target="build\native\lib\Win32\v142\Debug"/>
+    <file src="Release\zip.dll" target="build\native\bin\Win32\v142\Release"/>
+    <file src="Release\zip.lib" target="build\native\lib\Win32\v142\Release"/>
+    <file src="zip.h" target="build\native\include"/>
+    <file src="zip.targets" target="build\native"/>
+    <file src="zip-propertiesui.xml" target="build\native"/>
+    <file src="README.md" target="build"/>
+    <file src="README.md" target="build\native\doc"/>
+  </files>
+</package>
