@@ -9,10 +9,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Configure
-      run:  cmake .
+      run:  cmake -G "Visual Studio 16 2019" -A Win32 -S .
     - name: Build
       run: |
-        cmake -G "Visual Studio 16 2019" -A Win32 -S .
         cmake --build . --config "Debug"
         tree /a /f .
     - name: Test
@@ -28,10 +27,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Configure
-      run:  cmake .
+      run:  cmake -G "Visual Studio 16 2019" -A Win32 -S .
     - name: Build
       run: |
-        cmake -G "Visual Studio 16 2019" -A Win32 -S .
         cmake --build . --config "Release"
         tree /a /f .
     - name: Test
