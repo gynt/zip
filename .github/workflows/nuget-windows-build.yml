@@ -39,4 +39,46 @@ jobs:
       with:
         name: windows-msvc-release
         path: Release/*
-      
+  
+  nuget-package:
+    needs:
+      - windows-msvc-release
+      - windows-msvc-debug
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Download Debug Build Artifact
+      uses: actions/download-artifact@v2.0.10
+      with:
+        # Artifact name
+        name: windows-msvc-debug
+    - name: Download Release Build Artifact
+      uses: actions/download-artifact@v2.0.10
+      with:
+        # Artifact name
+        name: windows-msvc-release
+    - name: Move files to correct directories
+      shell: pwsh
+      run: |
+        mkdir Debug
+        mkdir Release
+        move windows-msvc-debug\* Debug\
+        move windows-msvc-release\* Release\
+        move src\zip.h zip.h
+    - name: Create nuget package
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: nuget pack zip.nuspec
+
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2.2.3
+      with:
+        # Artifact name
+        name: NuGet # optional, default is artifact
+        # A file, directory or wildcard pattern that describes what to upload
+        path: "*.nupkg"
+    - name: Set up nuget source
+      run: nuget sources add -Source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json -Name github -Username ${{ github.repository_owner }} -Password ${{ github.token }} -StorePasswordInClearText
+    - name: Publish Nuget to GitHub registry
+      run: nuget push *.nupkg -Source github -SkipDuplicate -NoSymbols 
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}     
