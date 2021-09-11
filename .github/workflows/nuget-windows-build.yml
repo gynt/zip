@@ -12,6 +12,7 @@ jobs:
       run:  cmake .
     - name: Build
       run: |
+        cmake -G "Visual Studio 16 2019" -A Win32 -S .
         cmake --build . --config "Debug"
         tree /a /f .
     - name: Test
@@ -30,6 +31,7 @@ jobs:
       run:  cmake .
     - name: Build
       run: |
+        cmake -G "Visual Studio 16 2019" -A Win32 -S .
         cmake --build . --config "Release"
         tree /a /f .
     - name: Test
