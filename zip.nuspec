@@ -22,8 +22,6 @@
     <file src="Release\zip.dll" target="build\native\bin\Win32\v142\Release"/>
     <file src="Release\zip.lib" target="build\native\lib\Win32\v142\Release"/>
     <file src="zip.h" target="build\native\include"/>
-    <file src="zip.targets" target="build\native"/>
-    <file src="zip-propertiesui.xml" target="build\native"/>
     <file src="README.md" target="build"/>
     <file src="README.md" target="build\native\doc"/>
   </files>
