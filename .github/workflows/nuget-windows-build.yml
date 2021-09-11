@@ -41,25 +41,16 @@ jobs:
         path: Release/*
   
   nuget-package:
-    needs:
-      - windows-msvc-release
-      - windows-msvc-debug
+    needs: [windows-msvc-release, windows-msvc-debug]
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Download Debug Build Artifact
+    - name: Download all Build Artifacts
       uses: actions/download-artifact@v2.0.10
-      with:
-        # Artifact name
-        name: windows-msvc-debug
-    - name: Download Release Build Artifact
-      uses: actions/download-artifact@v2.0.10
-      with:
-        # Artifact name
-        name: windows-msvc-release
     - name: Move files to correct directories
       shell: pwsh
       run: |
+        dir
         mkdir Debug
         mkdir Release
         move windows-msvc-debug\* Debug\
