@@ -9,7 +9,6 @@
     </Rule.DataSource>
     <EnumProperty Name="zipType" DisplayName="Library Type" Description="Which type of the library to link to" Category="zip">
       <EnumValue Name="" DisplayName="default" />
-      <EnumValue Name="dynamic" DisplayName="Dynamic Library - Dll (Default)" />
       <EnumValue Name="static" DisplayName="Static Library - Lib" />
     </EnumProperty>
     <EnumProperty Name="zipConfiguration" DisplayName="Configuration" Description="Which configuration of the library to use" Category="zip">
