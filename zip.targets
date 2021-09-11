@@ -6,7 +6,7 @@
   </ItemGroup>
   <!-- Fix configuration settings -->
   <PropertyGroup Condition="'$(zipType)' != 'static'">
-    <zipType>dynamic</zipType>
+    <zipType>static</zipType>
   </PropertyGroup>
   <Choose>
     <When Condition="$(Configuration.ToLower().Contains('debug'))">
@@ -54,27 +54,10 @@
       <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(zipType)' == 'dynamic'">
-    <ClCompile>
-      <PreprocessorDefinitions>zip_BUILD_AS_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-  </ItemDefinitionGroup>
   <!-- Linker settings -->
   <ItemDefinitionGroup Condition="'$(zipType)' == 'static'">
-    <Link>
-      <AdditionalDependencies>$(MSBuildThisFileDirectory)lib\$(PlatformName)\$(zipRuntimePlatform)\$(zipConfiguration)\zip_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(zipType)' == 'dynamic'">
     <Link>
       <AdditionalDependencies>$(MSBuildThisFileDirectory)lib\$(PlatformName)\$(zipRuntimePlatform)\$(zipConfiguration)\zip.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-  <!-- Copy dll redistributable -->
-  <ItemGroup Condition="'$(zipType)' == 'dynamic'">
-    <zipDlls Include="$(MSBuildThisFileDirectory)bin\$(PlatformName)\$(zipRuntimePlatform)\$(zipConfiguration)\zip.dll" />
-  </ItemGroup>
-  <Target Name="zipCopyDlls" AfterTargets="AfterBuild" Condition="'$(zipType)' == 'dynamic'">
-    <Copy SourceFiles="@(zipDlls)" DestinationFiles="@(zipDlls-&gt;'$(TargetDir)%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
-  </Target>
 </Project>
