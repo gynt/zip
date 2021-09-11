@@ -59,7 +59,7 @@ jobs:
         move windows-msvc-release\* Release\
         move src\zip.h zip.h
         
-    - name: Create nuget package
+    - name: Create NuGet package
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: nuget pack zip.nuspec
 
@@ -67,12 +67,12 @@ jobs:
       uses: actions/upload-artifact@v2.2.3
       with:
         # Artifact name
-        name: NuGet # optional, default is artifact
+        name: NuGet package # optional, default is artifact
         # A file, directory or wildcard pattern that describes what to upload
         path: "*.nupkg"
-    - name: Set up nuget source
+    - name: Set up NuGet source
       run: nuget sources add -Source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json -Name github -Username ${{ github.repository_owner }} -Password ${{ github.token }} -StorePasswordInClearText
-    - name: Publish Nuget to GitHub registry
+    - name: Publish NuGet to GitHub registry
       run: nuget push *.nupkg -Source github -SkipDuplicate -NoSymbols 
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}     
