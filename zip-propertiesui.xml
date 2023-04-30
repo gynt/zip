@@ -18,10 +18,7 @@
     </EnumProperty>
     <EnumProperty Name="zipRuntimePlatform" DisplayName="Runtime Platform" Description="Which cpp runtime platform version of the library to use" Category="zip">
       <EnumValue Name="" DisplayName="default" />
-      <EnumValue Name="v142" DisplayName="v142" />
-      <EnumValue Name="v141" DisplayName="v141" />
-      <EnumValue Name="v140" DisplayName="v140" />
-      <EnumValue Name="v120" DisplayName="v120" />
+      <EnumValue Name="v143" DisplayName="v143" />
     </EnumProperty>
   </Rule>
 </ProjectSchemaDefinitions>
