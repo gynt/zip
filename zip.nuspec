@@ -16,9 +16,9 @@
     <tags>native zip</tags>
   </metadata>
   <files>
-    <file src="Debug\zip.lib" target="build\native\lib\Win32\v142\Debug"/>
-    <file src="Debug\zip.pdb" target="build\native\lib\Win32\v142\Debug"/>
-    <file src="Release\zip.lib" target="build\native\lib\Win32\v142\Release"/>
+    <file src="Debug\zip.lib" target="build\native\lib\Win32\v143\Debug"/>
+    <file src="Debug\zip.pdb" target="build\native\lib\Win32\v143\Debug"/>
+    <file src="Release\zip.lib" target="build\native\lib\Win32\v143\Release"/>
     <file src="zip.targets" target="build\native"/>
     <file src="zip-propertiesui.xml" target="build\native"/>
     <file src="zip.h" target="build\native\include"/>
