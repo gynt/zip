@@ -5,6 +5,14 @@
 
 #include "minunit.h"
 
+#if defined(_WIN32) || defined(_WIN64)
+#define MKTEMP _mktemp
+#define UNLINK _unlink
+#else
+#define MKTEMP mkstemp
+#define UNLINK unlink
+#endif
+
 static char ZIPNAME[L_tmpnam + 1] = {0};
 
 #define TESTDATA1 "Some test data 1...\0"
@@ -12,7 +20,7 @@ static char ZIPNAME[L_tmpnam + 1] = {0};
 
 void test_setup(void) {
   strncpy(ZIPNAME, "z-XXXXXX\0", L_tmpnam);
-  mktemp(ZIPNAME);
+  MKTEMP(ZIPNAME);
 
   struct zip_t *zip = zip_open(ZIPNAME, ZIP_DEFAULT_COMPRESSION_LEVEL, 'w');
 
@@ -38,14 +46,14 @@ void test_setup(void) {
 }
 
 void test_teardown(void) {
-  remove("test/test-1.txt");
-  remove("test/test-2.txt");
-  remove("test/empty");
-  remove("test");
-  remove("empty");
-  remove("dotfiles/.test");
-  remove("dotfiles");
-  remove(ZIPNAME);
+  UNLINK("test/test-1.txt");
+  UNLINK("test/test-2.txt");
+  UNLINK("test/empty");
+  UNLINK("test");
+  UNLINK("empty");
+  UNLINK("dotfiles/.test");
+  UNLINK("dotfiles");
+  UNLINK(ZIPNAME);
 }
 
 #define UNUSED(x) (void)x
@@ -55,7 +63,7 @@ struct buffer_t {
   size_t size;
 };
 
-static size_t on_extract(void *arg, unsigned long long offset, const void *data,
+static size_t on_extract(void *arg, uint64_t offset, const void *data,
                          size_t size) {
   UNUSED(offset);
 
@@ -136,11 +144,47 @@ MU_TEST(test_extract_stream) {
   fclose(fp);
 }
 
+MU_TEST(test_extract_cstream) {
+  struct buffer_t buf;
+  FILE *ZIPFILE = fopen(ZIPNAME, "r");
+
+  struct zip_t *zip = zip_cstream_open(ZIPFILE, 0, 'r');
+  mu_check(zip != NULL);
+
+  memset((void *)&buf, 0, sizeof(struct buffer_t));
+
+  mu_assert_int_eq(0, zip_entry_open(zip, "test/test-1.txt"));
+  mu_assert_int_eq(0, zip_entry_extract(zip, on_extract, &buf));
+  mu_assert_int_eq(strlen(TESTDATA1), buf.size);
+  mu_assert_int_eq(0, strncmp(buf.data, TESTDATA1, buf.size));
+  mu_assert_int_eq(0, zip_entry_close(zip));
+
+  free(buf.data);
+  buf.data = NULL;
+  buf.size = 0;
+
+  memset((void *)&buf, 0, sizeof(struct buffer_t));
+
+  mu_assert_int_eq(0, zip_entry_open(zip, "dotfiles/.test"));
+  mu_assert_int_eq(0, zip_entry_extract(zip, on_extract, &buf));
+  mu_assert_int_eq(strlen(TESTDATA2), buf.size);
+  mu_assert_int_eq(0, strncmp(buf.data, TESTDATA2, buf.size));
+  mu_assert_int_eq(0, zip_entry_close(zip));
+
+  free(buf.data);
+  buf.data = NULL;
+  buf.size = 0;
+  fclose(ZIPFILE);
+
+  zip_cstream_close(zip);
+}
+
 MU_TEST_SUITE(test_extract_suite) {
   MU_SUITE_CONFIGURE(&test_setup, &test_teardown);
 
   MU_RUN_TEST(test_extract);
   MU_RUN_TEST(test_extract_stream);
+  MU_RUN_TEST(test_extract_cstream);
 }
 
 int main(int argc, char *argv[]) {

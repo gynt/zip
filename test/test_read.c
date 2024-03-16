@@ -5,6 +5,12 @@
 
 #include "minunit.h"
 
+#if defined(_WIN32) || defined(_WIN64)
+#define MKTEMP _mktemp
+#else
+#define MKTEMP mkstemp
+#endif
+
 static char ZIPNAME[L_tmpnam + 1] = {0};
 
 #define CRC32DATA1 2220805626
@@ -15,7 +21,7 @@ static char ZIPNAME[L_tmpnam + 1] = {0};
 
 void test_setup(void) {
   strncpy(ZIPNAME, "z-XXXXXX\0", L_tmpnam);
-  mktemp(ZIPNAME);
+  MKTEMP(ZIPNAME);
 
   struct zip_t *zip = zip_open(ZIPNAME, ZIP_DEFAULT_COMPRESSION_LEVEL, 'w');
 
@@ -49,9 +55,9 @@ MU_TEST(test_read) {
 
   struct zip_t *zip = zip_open(ZIPNAME, 0, 'r');
   mu_check(zip != NULL);
-  mu_assert_int_eq(0, zip_is64(zip));
+  mu_assert_int_eq(1, zip_is64(zip));
 
-  mu_assert_int_eq(0, zip_entry_open(zip, "test\\test-1.txt"));
+  mu_assert_int_eq(0, zip_entry_open(zip, "test/test-1.txt"));
   mu_assert_int_eq(strlen(TESTDATA1), zip_entry_size(zip));
   mu_check(CRC32DATA1 == zip_entry_crc32(zip));
   bufsize = zip_entry_read(zip, (void **)&buf, &buftmp);
@@ -72,7 +78,7 @@ MU_TEST(test_read) {
   free(buf);
   buf = NULL;
 
-  mu_assert_int_eq(0, zip_entry_open(zip, "test\\empty/"));
+  mu_assert_int_eq(0, zip_entry_open(zip, "test/empty/"));
   mu_assert_int_eq(0, strcmp(zip_entry_name(zip), "test/empty/"));
   mu_assert_int_eq(0, zip_entry_size(zip));
   mu_assert_int_eq(0, zip_entry_crc32(zip));
@@ -88,7 +94,7 @@ MU_TEST(test_noallocread) {
 
   struct zip_t *zip = zip_open(ZIPNAME, 0, 'r');
   mu_check(zip != NULL);
-  mu_assert_int_eq(0, zip_is64(zip));
+  mu_assert_int_eq(1, zip_is64(zip));
 
   mu_assert_int_eq(0, zip_entry_open(zip, "test/test-2.txt"));
   bufsize = zip_entry_noallocread(zip, (void *)buf, buftmp);

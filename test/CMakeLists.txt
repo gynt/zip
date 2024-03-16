@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.4)
+cmake_minimum_required(VERSION 3.14)
 
 find_package(Sanitizers)
 
@@ -38,3 +38,9 @@ add_executable(${test_permissions_out} test_permissions.c)
 target_link_libraries(${test_permissions_out} zip)
 add_test(NAME ${test_permissions_out} COMMAND ${test_permissions_out})
 add_sanitizers(${test_permissions_out})
+
+set(test_open_out test_open.out)
+add_executable(${test_open_out} test_open.c)
+target_link_libraries(${test_open_out} zip)
+add_test(NAME ${test_open_out} COMMAND ${test_open_out})
+add_sanitizers(${test_open_out})
